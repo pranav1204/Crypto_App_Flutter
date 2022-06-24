@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:crypto_app_flutter/model/CryptoModel.dart';
 import 'package:crypto_font_icons/crypto_font_icons.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +8,7 @@ import 'package:sizer/sizer.dart';
 import '../widgets/actions/actions_widget.dart';
 import '../widgets/balance_panel/balance_panel.dart';
 import '../widgets/chart/chart_home_page.dart';
+import 'package:http/http.dart' as http;
 
 class AppScreen extends StatefulWidget {
   const AppScreen({Key? key}) : super(key: key);
@@ -14,12 +18,41 @@ class AppScreen extends StatefulWidget {
 }
 
 class _AppScreenState extends State<AppScreen> {
+
+  var last1hour = 0;
+  var last1day = 1;
+  var last1week = 2;
+  var last1month = 3;
+  var last1year = 4;
+
   bool iconBool = false;
   IconData iconLight = Icons.wb_sunny;
   IconData iconDark = Icons.nights_stay;
   double balance = 66032206.10;
   double profit = 35.22;
   double profitPercent = 0.22;
+  bool loading = true;
+  var cryptoModel = CryptoModel();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    fetchCryptoList();
+
+    super.initState();
+  }
+  // get request
+
+  Future<void> fetchCryptoList() async {
+    var url = "https://data.messari.io/api/v2/assets?fields=id,slug,symbol,name,metrics/market_data&limit=500";
+    var response = await http.get(Uri.parse(url));
+    var decodeResponse =jsonDecode(response.body);
+    cryptoModel = CryptoModel.fromJson(decodeResponse);
+    setState(() {
+      loading = false;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -52,82 +85,64 @@ class _AppScreenState extends State<AppScreen> {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.only(top: 2.h),
-          child: ListView(
-            children: [
-              balancePanel(balance, profit, profitPercent, themeData),
-              actionsWidget(themeData),
-              chartHomePage(
-                true,
-                CryptoFontIcons.ETH,
-                'Ethereum',
-                'ETH',
-                'USD',
-                const [
-                  FlSpot(0, 2550.18),
-                  FlSpot(1, 2500.34),
-                  FlSpot(2, 2541.34),
-                  FlSpot(3, 2540.59),
-                  FlSpot(4, 2550.60),
-                  FlSpot(5, 2639.80),
-                  FlSpot(6, 2523.71),
-                ],
-                themeData,
-              ),
-              chartHomePage(
-                true,
-                CryptoFontIcons.BTC,
-                'Bitcoin',
-                'BTC',
-                'USD',
-                const [
-                  FlSpot(0, 40005.71),
-                  FlSpot(1, 40875.23),
-                  FlSpot(2, 40800.59),
-                  FlSpot(3, 40875.12),
-                  FlSpot(4, 41875.72),
-                  FlSpot(5, 40375.49),
-                  FlSpot(6, 40700.58),
-                ],
-                themeData,
-              ),
-              chartHomePage(
-                true,
-                CryptoFontIcons.DOGE,
-                'Dogecoin',
-                'DOGE',
-                'PLN',
-                const [
-                  FlSpot(0, 0.22),
-                  FlSpot(1, 0.24),
-                  FlSpot(2, 0.28),
-                  FlSpot(3, 0.30),
-                  FlSpot(4, 0.35),
-                  FlSpot(5, 0.52),
-                  FlSpot(6, 0.58),
-                ],
-                themeData,
-              ),
-              chartHomePage(
-                true,
-                CryptoFontIcons.LTC,
-                'Litecoin',
-                'LTC',
-                'USD',
-                const [
-                  FlSpot(0, 100.40),
-                  FlSpot(1, 102.34),
-                  FlSpot(2, 98.23),
-                  FlSpot(3, 100.23),
-                  FlSpot(4, 102.10),
-                  FlSpot(5, 103.85),
-                  FlSpot(6, 103.20),
-                ],
-                themeData,
-              ),
-            ],
-          ),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                balancePanel(balance, profit, profitPercent, themeData),
+                actionsWidget(themeData),
+                Container(
+                  color: Colors.transparent,
+                  height: MediaQuery.of(context).size.height * 0.55,
+                  width: MediaQuery.of(context).size.width,
+                  child: cryptoListView(themeData),
+                )
+              ],
+            ),
+          )
         ),
       ),
     );
+  }
+
+  Widget cryptoListView(var themeData)
+  {
+    if (cryptoModel.data != null)
+      {
+        return loading
+            ? Center(child: CircularProgressIndicator())
+            : Column(
+          children: [
+            Container(
+              child: Expanded(
+                child: ListView.builder(
+
+                  itemCount: cryptoModel.data?.length,
+                  itemBuilder: (context,index){
+                    return chartHomePage(
+                        true,
+                        CryptoFontIcons.ETH,
+                        cryptoModel.data![index].name.toString(),
+                        cryptoModel.data![index].symbol.toString(),
+                        'USD',
+                         [
+                          FlSpot(0, cryptoModel.data![index].metrics!.marketData!.ohlcvLast1Hour!.open),
+                          FlSpot(2, cryptoModel.data![index].metrics!.marketData!.ohlcvLast1Hour!.high),
+                          FlSpot(4, cryptoModel.data![index].metrics!.marketData!.ohlcvLast1Hour!.low),
+                           FlSpot(5, cryptoModel.data![index].metrics!.marketData!.ohlcvLast1Hour!.close),
+                          FlSpot(6, cryptoModel.data![index].metrics!.marketData!.priceUsd),
+                        ],
+                        themeData
+                    );
+                  },
+
+                ),
+              ),
+            )
+          ],
+        );
+      }
+    else {
+      return SizedBox.shrink();
+    }
   }
 }

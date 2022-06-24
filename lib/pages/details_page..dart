@@ -283,6 +283,7 @@ class _DetailsPageState extends State<DetailsPage> {
                             widget.maxY,
                             widget.profitPercent >= 0,
                           ),
+
                         ),
                       ),
                     ),
@@ -300,7 +301,20 @@ class _DetailsPageState extends State<DetailsPage> {
                   itemBuilder: (BuildContext context, int i) {
                     return Obx(() => i == selectedSort.value
                         ? GestureDetector(
-                        onTap: () => selectedSort.value = i,
+                         onTap: () {
+                           setState((){
+
+                             selectedSort.value = i;
+
+                           });
+                           if(i == 0)
+                             {
+
+                             }
+
+
+
+                         },// onTap: () => selectedSort.value = i,
                         child: chartSortWidget(
                             sortStrings[i], true, themeData))
                         : GestureDetector(
@@ -382,4 +396,5 @@ class _DetailsPageState extends State<DetailsPage> {
       ),
     );
   }
+
 }

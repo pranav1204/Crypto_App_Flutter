@@ -28,6 +28,11 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
 
 
+  //nomics api key -> 8a1a91ee8c13a4d67af8cac88ba689a1ac124a96
+  //messari api key -> ed37c3d9-43af-4528-85a9-1fe47c237ed6
+
+  //http model -> https://data.messari.io/api/v2/assets?fields=id,slug,symbol,name,metrics/market_data&limit=500
+
   @override
   Widget build(BuildContext context) {
     return Sizer(builder: (context, orientation, deviceType) {
