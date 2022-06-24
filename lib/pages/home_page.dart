@@ -1,8 +1,9 @@
+import 'package:crypto_app_flutter/login_activity/screen.dart';
+import 'package:crypto_app_flutter/widgets/actions/actions_widget.dart';
 import 'package:crypto_font_icons/crypto_font_icons.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-import '../widgets/actions/actions_widget.dart';
 import '../widgets/balance_panel/balance_panel.dart';
 import '../widgets/chart/chart_home_page.dart';
 
@@ -29,6 +30,12 @@ class _AppScreenState extends State<AppScreen> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(40.0), //appbar size
         child: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () =>
+                Navigator.push(context, MaterialPageRoute(builder: (builder) => HomePage())),
+                icon: Icon(Icons.logout),color: themeData.primaryColor,)
+          ],
           bottomOpacity: 0.0,
           elevation: 0.0,
           shadowColor: Colors.transparent,
@@ -55,7 +62,7 @@ class _AppScreenState extends State<AppScreen> {
           child: ListView(
             children: [
               balancePanel(balance, profit, profitPercent, themeData),
-              actionsWidget(themeData),
+              actionsWidget(themeData,context),
               chartHomePage(
                 true,
                 CryptoFontIcons.ETH,

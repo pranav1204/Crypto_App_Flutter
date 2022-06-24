@@ -6,7 +6,7 @@ import 'package:sizer/sizer.dart';
 
 import '../crypto_icon.dart';
 
-Center balancePanel(
+Center  balancePanel(
     double balance, double profit, double profitPercent, ThemeData themeData) {
   return Center(
     child: Container(

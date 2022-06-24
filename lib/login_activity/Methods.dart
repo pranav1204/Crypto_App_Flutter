@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 import 'login.dart';
 
 Future<User?> createAccount(String name, String email, String password) async {
@@ -12,7 +13,7 @@ Future<User?> createAccount(String name, String email, String password) async {
     UserCredential userCrendetial = await _auth.createUserWithEmailAndPassword(
         email: email, password: password);
 
-    print("Account created Succesfull");
+    Toast.show("Account created Succesfull");
 
     userCrendetial.user!.updateDisplayName(name);
 
@@ -26,9 +27,9 @@ Future<User?> createAccount(String name, String email, String password) async {
 
     return userCrendetial.user;
   } catch (e) {
-    print(e);
-    return null;
+    Toast.show(e.toString());
   }
+  return null;
 }
 
 Future<User?> logIn(String email, String password) async {
@@ -38,8 +39,6 @@ Future<User?> logIn(String email, String password) async {
   try {
     UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
-
-    print("Login Sucessfull");
     _firestore
         .collection('users')
         .doc(_auth.currentUser!.uid)
@@ -48,11 +47,10 @@ Future<User?> logIn(String email, String password) async {
 
     return userCredential.user;
   } catch (e) {
-    print(e);
-    return null;
+    Toast.show(e.toString());
   }
+  return null;
 }
-
 Future logOut(BuildContext context) async {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -61,6 +59,6 @@ Future logOut(BuildContext context) async {
       Navigator.push(context, MaterialPageRoute(builder: (_) => LoginScreen()));
     });
   } catch (e) {
-    print("error");
+    Toast.show("ERROR");
   }
 }

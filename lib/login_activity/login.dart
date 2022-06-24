@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'Methods.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -22,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: isLoading
           ? Center(
-        child: Container(
+        child: SizedBox(
           height: size.height / 20,
           width: size.height / 20,
           child: CircularProgressIndicator(),
@@ -45,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(
               height: size.height / 50,
             ),
-            Container(
+            SizedBox(
               width: size.width / 1.1,
               child: Text(
                 "Welcome",
@@ -55,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            Container(
+            SizedBox(
               width: size.width / 1.1,
               child: Text(
                 "Sign In to Contiue!",
@@ -72,7 +74,21 @@ class _LoginScreenState extends State<LoginScreen> {
             Container(
               width: size.width,
               alignment: Alignment.center,
-              child: field(size, "email", Icons.account_box, _email),
+              child: SizedBox(
+                height: size.height / 14,
+                width: size.width / 1.1,
+                child: TextField(
+                  controller: _email,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.account_box),
+                    hintText: "email",
+                    hintStyle: TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 18.0),
@@ -117,21 +133,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
           logIn(_email.text, _password.text).then((user) {
             if (user != null) {
-              print("Login Sucessfull");
               setState(() {
                 isLoading = false;
               });
               Navigator.push(
                   context, MaterialPageRoute(builder: (_) => SplashScreen()));
             } else {
-              print("Login Failed");
               setState(() {
                 isLoading = false;
               });
             }
           });
         } else {
-          print("Please fill form correctly");
         }
       },
       child: Container(
@@ -155,11 +168,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget field(
       Size size, String hintText, IconData icon, TextEditingController cont) {
-    return Container(
+    return SizedBox(
       height: size.height / 14,
       width: size.width / 1.1,
       child: TextField(
         controller: cont,
+        obscureText: true,
         decoration: InputDecoration(
           prefixIcon: Icon(icon),
           hintText: hintText,

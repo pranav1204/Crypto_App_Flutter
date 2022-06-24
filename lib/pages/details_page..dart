@@ -319,7 +319,7 @@ class _DetailsPageState extends State<DetailsPage> {
                   InkWell(
                     onTap: () {
                       sell();
-                    }, //TODO: add sell action
+                    },
                     splashColor:
                     themeData.secondaryHeaderColor.withOpacity(0.5),
                     highlightColor:
@@ -351,7 +351,7 @@ class _DetailsPageState extends State<DetailsPage> {
                   InkWell(
                     onTap: () {
                       buy();
-                    }, //TODO: add buy action
+                    },
                     splashColor: themeData.primaryColor,
                     highlightColor: themeData.primaryColor,
                     child: Container(

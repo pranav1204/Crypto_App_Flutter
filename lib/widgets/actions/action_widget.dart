@@ -12,10 +12,9 @@ Padding actionWidget(
     child: Column(
       children: [
         InkWell(
-          onTap: () {}, //TODO: add onTap action
+          onTap: () {},
           child: Container(
             decoration: BoxDecoration(
-              color: themeData.primaryColor.withOpacity(0.05),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Padding(
@@ -23,6 +22,7 @@ Padding actionWidget(
               child: Icon(
                 actionIcon,
                 size: 20.sp,
+                color: Colors.black,
               ),
             ),
           ),
@@ -32,7 +32,7 @@ Padding actionWidget(
           child: Text(
             actionStr,
             style: GoogleFonts.poppins(
-              color: themeData.primaryColor,
+              color: Colors.black,
               fontWeight: FontWeight.w500,
               fontSize: 13.sp,
             ),

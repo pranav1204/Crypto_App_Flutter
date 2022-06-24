@@ -1,11 +1,13 @@
 import 'package:crypto_app_flutter/login_activity/screen.dart';
-import 'package:crypto_app_flutter/login_activity/splashscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 
 import 'Methods.dart';
 
 
 class CreateAccount extends StatefulWidget {
+  const CreateAccount({Key? key}) : super(key: key);
+
   @override
   _CreateAccountState createState() => _CreateAccountState();
 }
@@ -23,7 +25,7 @@ class _CreateAccountState extends State<CreateAccount> {
     return Scaffold(
       body: isLoading
           ? Center(
-        child: Container(
+        child: SizedBox(
           height: size.height / 20,
           width: size.height / 20,
           child: CircularProgressIndicator(),
@@ -46,7 +48,7 @@ class _CreateAccountState extends State<CreateAccount> {
             SizedBox(
               height: size.height / 50,
             ),
-            Container(
+            SizedBox(
               width: size.width / 1.1,
               child: Text(
                 "Welcome",
@@ -56,7 +58,7 @@ class _CreateAccountState extends State<CreateAccount> {
                 ),
               ),
             ),
-            Container(
+            SizedBox(
               width: size.width / 1.1,
               child: Text(
                 "Create Account to Contiue!",
@@ -81,7 +83,21 @@ class _CreateAccountState extends State<CreateAccount> {
             Container(
               width: size.width,
               alignment: Alignment.center,
-              child: field(size, "email", Icons.account_box, _email),
+              child: SizedBox(
+                height: size.height / 14,
+                width: size.width / 1.1,
+                child: TextField(
+                  controller: _email,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.account_box),
+                    hintText: "email",
+                    hintStyle: TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 18.0),
@@ -124,24 +140,20 @@ class _CreateAccountState extends State<CreateAccount> {
           setState(() {
             isLoading = true;
           });
-
           createAccount(_name.text, _email.text, _password.text).then((user) {
             if (user != null) {
               setState(() {
                 isLoading = false;
               });
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => SplashScreen()));
-              print("Account Created Sucessfull");
             } else {
-              print("Login Failed");
+              Toast.show("Login Failed");
               setState(() {
                 isLoading = false;
               });
             }
           });
         } else {
-          print("Please enter Fields");
+          Toast.show("Please enter Fields");
         }
       },
       child: Container(
@@ -165,11 +177,12 @@ class _CreateAccountState extends State<CreateAccount> {
 
   Widget field(
       Size size, String hintText, IconData icon, TextEditingController cont) {
-    return Container(
+    return SizedBox(
       height: size.height / 14,
       width: size.width / 1.1,
       child: TextField(
         controller: cont,
+        obscureText: true,
         decoration: InputDecoration(
           prefixIcon: Icon(icon),
           hintText: hintText,
